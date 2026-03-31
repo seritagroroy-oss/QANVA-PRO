@@ -15,6 +15,7 @@ type ViewMode = 'dashboard' | 'editor';
 export default function App() {
   const [view, setView] = useState<ViewMode>('dashboard');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createCategory, setCreateCategory] = useState('foryou');
 
   if (view === 'dashboard') {
     return (
@@ -220,20 +221,28 @@ export default function App() {
                  
                  {/* Left Sidebar (Categories) */}
                  <div className="w-56 bg-slate-50 border-r border-slate-100 p-3 flex flex-col gap-1 overflow-y-auto shrink-0">
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-violet-100/50 text-violet-700 font-semibold text-sm transition-colors">
-                       <Sparkles size={18} />
+                    <button 
+                      onClick={() => setCreateCategory('foryou')}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors ${createCategory === 'foryou' ? 'bg-violet-100/50 text-violet-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium'}`}>
+                       <Sparkles size={18} className={createCategory === 'foryou' ? 'text-violet-700' : 'text-slate-500'} />
                        Pour vous
                     </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium text-sm transition-colors">
-                       <Presentation size={18} className="text-orange-500" />
+                    <button 
+                      onClick={() => setCreateCategory('slides')}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors ${createCategory === 'slides' ? 'bg-violet-100/50 text-violet-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium'}`}>
+                       <Presentation size={18} className={createCategory === 'slides' ? 'text-violet-700' : 'text-orange-500'} />
                        Diaporamas
                     </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium text-sm transition-colors">
-                       <Heart size={18} className="text-rose-500" />
+                    <button 
+                      onClick={() => setCreateCategory('social')}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors ${createCategory === 'social' ? 'bg-violet-100/50 text-violet-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium'}`}>
+                       <Heart size={18} className={createCategory === 'social' ? 'text-violet-700' : 'text-rose-500'} />
                        Réseaux sociaux
                     </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium text-sm transition-colors">
-                       <Camera size={18} className="text-pink-500" />
+                    <button 
+                      onClick={() => setCreateCategory('photo')}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors ${createCategory === 'photo' ? 'bg-violet-100/50 text-violet-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium'}`}>
+                       <Camera size={18} className={createCategory === 'photo' ? 'text-violet-700' : 'text-pink-500'} />
                        Éditeur photo
                     </button>
                     <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium text-sm transition-colors">
@@ -271,106 +280,165 @@ export default function App() {
 
                  {/* Right Content Area */}
                  <div className="flex-1 p-8 overflow-y-auto bg-white">
-                    <p className="text-sm font-medium text-slate-500 mb-8 hover:text-violet-600 cursor-pointer transition-colors inline-block">Flyer (Portrait A4)</p>
+                    {createCategory === 'foryou' && (
+                      <div className="animate-in fade-in duration-300">
+                        <p className="text-sm font-medium text-slate-500 mb-8 hover:text-violet-600 cursor-pointer transition-colors inline-block">Flyer (Portrait A4)</p>
 
-                    {/* Section 1 */}
-                    <div className="mb-10">
-                       <h3 className="text-lg font-bold text-slate-800 mb-6">Populaires sur Canva</h3>
-                       <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
-                          
-                          {/* Item 1 */}
-                          <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
-                            <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
-                               <div className="w-full h-full bg-white rounded-lg shadow-sm border border-slate-200 flex flex-col relative overflow-hidden">
-                                  {/* Dummy UI */}
-                                  <div className="h-8 bg-slate-50 border-b border-slate-100 flex items-center px-2">
-                                     <div className="w-16 h-2 bg-slate-200 rounded-full"></div>
-                                  </div>
-                                  <div className="flex-1 p-2 flex items-end">
-                                     <div className="w-full h-1/2 bg-orange-100 rounded-t-md relative">
-                                        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-orange-400"></div>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                            <div>
-                               <p className="text-sm font-bold text-slate-800">Présentation</p>
-                               <p className="text-xs text-slate-500 mt-1">1920 × 1080 px</p>
-                            </div>
-                          </div>
-
-                          {/* Item 2 */}
-                          <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
-                            <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors relative">
-                               <div className="w-2/3 h-full bg-white rounded-lg shadow-md border border-slate-200 -rotate-6 absolute left-4 flex flex-col truncate">
-                                  <div className="h-4 bg-teal-600 w-full flex items-center px-1"><Sparkles size={8} className="text-white"/></div>
-                                  <div className="p-1 space-y-1 mt-1">
-                                    <div className="w-full h-1 bg-slate-200 rounded-full"></div>
-                                    <div className="w-3/4 h-1 bg-slate-200 rounded-full"></div>
-                                    <div className="w-full h-1 bg-teal-100 rounded-full mt-2"></div>
-                                  </div>
-                               </div>
-                               <div className="w-1/3 h-2/3 bg-white rounded-md shadow-lg border border-slate-200 absolute right-6 bottom-4 z-10 flex flex-col pt-1 truncate">
-                                  <div className="h-2 bg-teal-600 w-full mb-1"></div>
-                                  <div className="w-3/4 h-0.5 bg-slate-200 mx-auto mt-1"></div>
-                                  <div className="w-full h-4 bg-teal-100 mt-auto"></div>
-                               </div>
-                            </div>
-                            <div>
-                               <p className="text-sm font-bold text-slate-800">Doc (Numérique)</p>
-                            </div>
-                          </div>
-
-                          {/* Item 3 */}
-                          <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
-                            <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
-                               <div className="w-16 h-24 bg-violet-600 rounded-sm shadow-md flex items-center justify-center relative shadow-violet-500/20">
-                                   <div className="absolute top-0 right-0 w-0 h-0 border-t-[8px] border-r-[8px] border-t-white border-r-transparent"></div>
-                                   {/* Flower logo imitation */}
-                                   <div className="w-8 h-8 opacity-50 relative -mt-4">
-                                      <div className="w-3 h-3 bg-white rounded-full absolute top-0 left-2"></div>
-                                      <div className="w-4 h-2 bg-white rounded-full absolute top-3 left-4 -rotate-45"></div>
-                                      <div className="w-4 h-2 bg-white rounded-full absolute top-3 left-0 rotate-45"></div>
-                                      <div className="w-2 h-4 bg-white rounded-full absolute top-4 left-3"></div>
-                                   </div>
-                                   <div className="absolute bottom-4 left-3 right-3 h-[2px] bg-white/40"></div>
-                                   <div className="absolute bottom-2 left-3 right-5 h-[2px] bg-white/40"></div>
-                               </div>
-                            </div>
-                            <div>
-                               <p className="text-sm font-bold text-slate-800">Document (Portrait A4)</p>
-                            </div>
-                          </div>
-
-                       </div>
-                    </div>
-
-                    {/* Section 2 */}
-                    <div>
-                       <h3 className="text-lg font-bold text-slate-800 mb-6">Essayez quelque chose de différent</h3>
-                       <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
-                           {/* Item 4 */}
-                           <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
-                            <div className="h-32 bg-gradient-to-br from-violet-100 to-indigo-50 rounded-2xl flex items-center justify-center p-4 group-hover:brightness-95 transition-all">
-                               <div className="w-16 h-20 bg-white rounded-sm shadow-sm flex flex-col relative overflow-hidden">
-                                   <div className="h-1/2 bg-violet-500 flex items-center justify-center">
-                                      {/* Partial flower */}
-                                      <div className="w-6 h-6 rotate-12 relative -mb-4">
-                                         <div className="w-2 h-3 bg-white rounded-full absolute top-0 left-2"></div>
-                                         <div className="w-3 h-1.5 bg-white rounded-full absolute top-2 left-3 -rotate-45"></div>
-                                         <div className="w-3 h-1.5 bg-white rounded-full absolute top-2 left-0 rotate-45"></div>
+                        {/* Section 1 */}
+                        <div className="mb-10">
+                           <h3 className="text-lg font-bold text-slate-800 mb-6">Populaires sur Canva</h3>
+                           <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
+                              
+                              {/* Item 1 */}
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                                <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
+                                   <div className="w-full h-full bg-white rounded-lg shadow-sm border border-slate-200 flex flex-col relative overflow-hidden">
+                                      {/* Dummy UI */}
+                                      <div className="h-8 bg-slate-50 border-b border-slate-100 flex items-center px-2">
+                                         <div className="w-16 h-2 bg-slate-200 rounded-full"></div>
+                                      </div>
+                                      <div className="flex-1 p-2 flex items-end">
+                                         <div className="w-full h-1/2 bg-orange-100 rounded-t-md relative">
+                                            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-orange-400"></div>
+                                         </div>
                                       </div>
                                    </div>
-                               </div>
-                            </div>
-                            <div>
-                               <p className="text-sm font-bold text-slate-800">Affiche</p>
-                               <p className="text-xs text-slate-500 mt-1">42 × 59.4 cm</p>
-                            </div>
-                          </div>
-                       </div>
-                    </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800">Présentation</p>
+                                   <p className="text-xs text-slate-500 mt-1">1920 × 1080 px</p>
+                                </div>
+                              </div>
 
+                              {/* Item 2 */}
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                                <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors relative">
+                                   <div className="w-2/3 h-full bg-white rounded-lg shadow-md border border-slate-200 -rotate-6 absolute left-4 flex flex-col truncate">
+                                      <div className="h-4 bg-teal-600 w-full flex items-center px-1"><Sparkles size={8} className="text-white"/></div>
+                                      <div className="p-1 space-y-1 mt-1">
+                                        <div className="w-full h-1 bg-slate-200 rounded-full"></div>
+                                        <div className="w-3/4 h-1 bg-slate-200 rounded-full"></div>
+                                        <div className="w-full h-1 bg-teal-100 rounded-full mt-2"></div>
+                                      </div>
+                                   </div>
+                                   <div className="w-1/3 h-2/3 bg-white rounded-md shadow-lg border border-slate-200 absolute right-6 bottom-4 z-10 flex flex-col pt-1 truncate">
+                                      <div className="h-2 bg-teal-600 w-full mb-1"></div>
+                                      <div className="w-3/4 h-0.5 bg-slate-200 mx-auto mt-1"></div>
+                                      <div className="w-full h-4 bg-teal-100 mt-auto"></div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800">Doc (Numérique)</p>
+                                </div>
+                              </div>
+
+                              {/* Item 3 */}
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                                <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
+                                   <div className="w-16 h-24 bg-violet-600 rounded-sm shadow-md flex items-center justify-center relative shadow-violet-500/20">
+                                       <div className="absolute top-0 right-0 w-0 h-0 border-t-[8px] border-r-[8px] border-t-white border-r-transparent"></div>
+                                       {/* Flower logo imitation */}
+                                       <div className="w-8 h-8 opacity-50 relative -mt-4">
+                                          <div className="w-3 h-3 bg-white rounded-full absolute top-0 left-2"></div>
+                                          <div className="w-4 h-2 bg-white rounded-full absolute top-3 left-4 -rotate-45"></div>
+                                          <div className="w-4 h-2 bg-white rounded-full absolute top-3 left-0 rotate-45"></div>
+                                          <div className="w-2 h-4 bg-white rounded-full absolute top-4 left-3"></div>
+                                       </div>
+                                       <div className="absolute bottom-4 left-3 right-3 h-[2px] bg-white/40"></div>
+                                       <div className="absolute bottom-2 left-3 right-5 h-[2px] bg-white/40"></div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800">Document (Portrait A4)</p>
+                                </div>
+                              </div>
+
+                           </div>
+                        </div>
+
+                        {/* Section 2 */}
+                        <div>
+                           <h3 className="text-lg font-bold text-slate-800 mb-6">Essayez quelque chose de différent</h3>
+                           <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
+                               {/* Item 4 */}
+                               <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                                <div className="h-32 bg-gradient-to-br from-violet-100 to-indigo-50 rounded-2xl flex items-center justify-center p-4 group-hover:brightness-95 transition-all">
+                                   <div className="w-16 h-20 bg-white rounded-sm shadow-sm flex flex-col relative overflow-hidden">
+                                       <div className="h-1/2 bg-violet-500 flex items-center justify-center">
+                                          {/* Partial flower */}
+                                          <div className="w-6 h-6 rotate-12 relative -mb-4">
+                                             <div className="w-2 h-3 bg-white rounded-full absolute top-0 left-2"></div>
+                                             <div className="w-3 h-1.5 bg-white rounded-full absolute top-2 left-3 -rotate-45"></div>
+                                             <div className="w-3 h-1.5 bg-white rounded-full absolute top-2 left-0 rotate-45"></div>
+                                          </div>
+                                       </div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800">Affiche</p>
+                                   <p className="text-xs text-slate-500 mt-1">42 × 59.4 cm</p>
+                                </div>
+                              </div>
+                           </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {createCategory === 'slides' && (
+                      <div className="animate-in fade-in duration-300">
+                        {/* Section 1 */}
+                        <div className="mb-10">
+                           <h3 className="text-[17px] font-bold text-slate-800 mb-3">Diaporamas</h3>
+                           <div className="w-full h-px bg-slate-200 mb-6"></div>
+                           
+                           <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
+                              {/* Item 1: Presentation */}
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                                <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
+                                   <div className="w-[120px] h-20 bg-white shadow-sm border border-slate-200 flex items-center justify-center p-2 relative overflow-hidden rounded-md">
+                                      <div className="w-full h-full rounded bg-slate-100 flex items-end px-2 pt-3 relative border border-slate-200">
+                                         {/* bars */}
+                                         <div className="flex gap-[2px] items-end w-full h-[60%]">
+                                            <div className="flex-1 bg-rose-500 h-[40%] rounded-t-[1px]"></div>
+                                            <div className="flex-1 bg-rose-500 h-[60%] rounded-t-[1px]"></div>
+                                            <div className="flex-1 bg-rose-500 h-[100%] rounded-t-[1px]"></div>
+                                            <div className="flex-1 bg-rose-500 h-[80%] rounded-t-[1px]"></div>
+                                         </div>
+                                         <div className="w-[80%] h-1 bg-rose-300 absolute -rotate-[20deg] left-2 top-4"></div>
+                                      </div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800 hover:text-violet-600 transition-colors">Présentation</p>
+                                </div>
+                              </div>
+                           </div>
+                        </div>
+
+                        {/* Section 2 */}
+                        <div>
+                           <h3 className="text-[17px] font-bold text-slate-800 mb-3">Plus de façons de se lancer</h3>
+                           <div className="w-full h-px bg-slate-200 mb-6"></div>
+                           <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
+                               {/* Item 2 */}
+                               <div className="group cursor-pointer flex flex-col gap-3 min-w-[200px]" onClick={() => setView('editor')}>
+                                <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors relative overflow-hidden">
+                                   <div className="w-[100px] h-[60px] bg-rose-400 rounded-md shadow-sm border border-rose-300 absolute -rotate-6 left-1/2 -ml-[60px] top-6 flex flex-col px-3 py-2">
+                                      <div className="w-4 h-4 rounded-sm bg-white/40 mb-auto"></div>
+                                   </div>
+                                   <div className="w-[100px] h-[60px] bg-gradient-to-br from-rose-500 to-orange-500 rounded-md shadow-md border border-rose-400 absolute rotate-6 right-1/2 -mr-[60px] top-8 flex justify-center items-center">
+                                       <div className="w-12 h-2 rounded-full bg-white/40"></div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800 hover:text-violet-600 transition-colors">Parcourir les modèles</p>
+                                   <p className="text-[13px] text-slate-500 mt-0.5">Explorez les modèles élaborés</p>
+                                </div>
+                              </div>
+                           </div>
+                        </div>
+                      </div>
+                    )}
                  </div>
                </div>
 
