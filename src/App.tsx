@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Scissors, Image as ImageIcon, Type, Square, Download, LogOut, ArrowRight, MousePointer2 } from 'lucide-react';
+import { 
+  Home, FolderOpen, LayoutTemplate, Star, Sparkles, 
+  Settings, Bell, Search, ChevronDown, Plus, Presentation,
+  MonitorPlay, FileText, MonitorUp, Grid, Globe, Mail, Image as ImageIcon,
+  MoreHorizontal, UploadCloud, SlidersHorizontal, ArrowUpDown, LayoutGrid, List,
+  LayoutDashboard, Scissors, Type, Square, Download, LogOut, ArrowRight, MousePointer2
+} from 'lucide-react';
 import { cn } from './utils/cn';
 
 // Simple dashboard / Editor switch
@@ -10,34 +16,181 @@ export default function App() {
 
   if (view === 'dashboard') {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-        {/* Glow Effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="flex h-screen w-full bg-white text-slate-800 font-sans overflow-hidden">
         
-        <div className="z-10 text-center max-w-2xl space-y-8">
-          <div className="flex items-center justify-center gap-3 mb-8">
-             <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
-               <span className="text-white font-black text-xl tracking-tighter">Q</span>
-             </div>
-             <h1 className="text-4xl font-extrabold tracking-tight">QANVA-PRO</h1>
-          </div>
+        {/* L E F T   S I D E B A R (Thin Icon Mode) */}
+        <aside className="w-[72px] bg-slate-50 border-r border-slate-200 flex flex-col items-center py-4 shrink-0 shadow-sm z-20">
           
-          <h2 className="text-5xl md:text-6xl font-black leading-tight">
-            Designez tout. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Instantanément.</span>
-          </h2>
-          <p className="text-lg text-slate-400">
-            L'outil visuel de création graphique directement dans votre navigateur.
-          </p>
-          
-          <button 
-            onClick={() => setView('editor')}
-            className="group relative inline-flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-xl shadow-indigo-500/20 hover:scale-105"
-          >
-            Créer un nouveau design
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          <button className="flex flex-col items-center justify-center gap-1.5 mb-6 group" onClick={() => setView('editor')}>
+            <div className="w-10 h-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-all hover:scale-105">
+              <Plus size={24} />
+            </div>
+            <span className="text-[10px] font-medium text-slate-700">Créer</span>
           </button>
-        </div>
+
+          <div className="flex flex-col w-full gap-2">
+            {[
+              { id: 'home', icon: Home, label: 'Accueil', active: true },
+              { id: 'projects', icon: FolderOpen, label: 'Projets' },
+              { id: 'templates', icon: LayoutTemplate, label: 'Modèles' },
+              { id: 'brand', icon: Star, label: 'Marque' },
+              { id: 'ai', icon: Sparkles, label: 'IA Canva' },
+              { id: 'more', icon: MoreHorizontal, label: 'Plus' },
+            ].map(item => (
+              <button 
+                key={item.id} 
+                className={cn(
+                  "w-full flex w-16 mx-auto flex-col items-center justify-center gap-1 p-2 rounded-xl transition-colors",
+                  item.active ? "text-violet-700 bg-slate-200/60" : "text-slate-500 hover:bg-slate-200/40 hover:text-slate-800"
+                )}
+              >
+                <item.icon size={22} strokeWidth={item.active ? 2.5 : 2} className={item.active ? "fill-violet-700/10" : ""} />
+                <span className="text-[9px] font-medium truncate w-full text-center tracking-tight">{item.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-auto flex flex-col w-full gap-2 mb-2">
+             <button className="w-16 mx-auto flex flex-col items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-200/40 transition-colors relative">
+                <Bell size={22} strokeWidth={2} />
+                <span className="absolute top-2 right-4 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
+             </button>
+             <button className="w-16 mx-auto flex flex-col items-center justify-center p-2 rounded-xl hover:bg-slate-200/40 transition-colors">
+                <div className="w-8 h-8 rounded-full bg-violet-600 text-white font-bold flex items-center justify-center text-xs">
+                  QA
+                </div>
+             </button>
+          </div>
+        </aside>
+
+        {/* M A I N   C O N T E N T */}
+        <main className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden relative bg-white">
+            
+            {/* Top Gradient Banner Area */}
+            <div className="relative w-full pt-16 pb-8 px-8 flex flex-col items-center justify-center shrink-0">
+               {/* Background Gradient matching the photo */}
+               <div className="absolute inset-0 bg-gradient-to-r from-[#e0f7f9] via-[#f0eefd] to-[#e4e0fb] -z-10" />
+               
+               {/* Badge Top Right */}
+               <div className="absolute top-4 right-8 bg-gradient-to-r from-cyan-500 via-indigo-500 to-violet-600 hover:brightness-110 cursor-pointer transition-all text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 shadow-md">
+                 <Sparkles size={14} className="fill-white" />
+                 QanvaCreate est de retour
+               </div>
+
+               {/* Title */}
+               <h1 className="text-4xl font-semibold text-[#2d1b54] tracking-tight mb-8">
+                 Qu'allez-vous créer aujourd'hui ?
+               </h1>
+
+               {/* Search Bar */}
+               <div className="w-full max-w-3xl relative flex items-center mb-6">
+                 <div className="absolute left-5 text-slate-500">
+                    <Search size={20} strokeWidth={2.5} />
+                 </div>
+                 <input 
+                   type="text" 
+                   placeholder="Recherchez des designs, des dossiers et des importations" 
+                   className="w-full h-14 pl-14 pr-6 rounded-full border border-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 bg-white text-base text-slate-800 placeholder:text-slate-500/80 transition-shadow hover:shadow-md"
+                 />
+               </div>
+
+               {/* Filters */}
+               <div className="flex items-center gap-2 text-[13px] font-medium text-slate-600">
+                 {['Type', 'Catégorie', 'Propriétaire', 'Date de modification'].map(filter => (
+                   <button key={filter} className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-900/5 transition-colors">
+                     {filter}
+                     <ChevronDown size={14} className="text-slate-400" />
+                   </button>
+                 ))}
+               </div>
+            </div>
+
+            {/* Circular Category Row */}
+            <div className="w-full max-w-[1200px] mx-auto px-8 mt-6">
+               <div className="flex items-start justify-between gap-2 overflow-x-auto scrollbar-none pb-4">
+                 {[
+                   { name: 'Présentation', icon: Presentation, color: 'bg-orange-500', iconColor: 'text-white' },
+                   { name: 'Réseaux', icon: MonitorPlay, color: 'bg-gradient-to-br from-rose-400 to-pink-500', iconColor: 'text-white' },
+                   { name: 'Vidéos', icon: MonitorPlay, color: 'bg-violet-500', iconColor: 'text-white' },
+                   { name: 'Doc', icon: FileText, color: 'bg-teal-500', iconColor: 'text-white' },
+                   { name: 'Tableau blanc', icon: MonitorUp, color: 'bg-emerald-500', iconColor: 'text-white' },
+                   { name: 'Tableur', icon: Grid, color: 'bg-blue-500', iconColor: 'text-white' },
+                   { name: 'Site Web', icon: Globe, color: 'bg-indigo-600', iconColor: 'text-white' },
+                   { name: 'E-mail', icon: Mail, color: 'bg-purple-600', iconColor: 'text-white' },
+                   { name: 'Éditeur photo', icon: ImageIcon, color: 'bg-slate-200', iconColor: 'text-slate-600' },
+                   { name: 'Dimension...', icon: SlidersHorizontal, color: 'bg-slate-100', iconColor: 'text-slate-600' },
+                   { name: 'Importer', icon: UploadCloud, color: 'bg-slate-100', iconColor: 'text-slate-600' },
+                 ].map((cat, i) => (
+                   <button key={i} onClick={() => setView('editor')} className="flex flex-col items-center gap-3 min-w-[80px] group">
+                     <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all", cat.color)}>
+                       <cat.icon size={26} className={cat.iconColor} strokeWidth={1.5} />
+                     </div>
+                     <span className="text-xs font-medium text-slate-700 text-center leading-tight whitespace-nowrap">{cat.name}</span>
+                   </button>
+                 ))}
+               </div>
+            </div>
+
+            {/* RECENTS SECTION */}
+            <div className="w-full max-w-[1200px] mx-auto px-8 mt-10 mb-20">
+               <div className="flex items-center justify-between mb-6">
+                 <h2 className="text-[22px] font-bold text-slate-800">Récents</h2>
+                 <div className="flex items-center gap-4 text-sm font-medium text-slate-600">
+                    <button className="flex items-center gap-2 hover:bg-slate-100 px-2 py-1.5 rounded-md">Propriétaire <ChevronDown size={16} /></button>
+                    <button className="flex items-center gap-2 hover:bg-slate-100 px-2 py-1.5 rounded-md">Tout type <ChevronDown size={16} /></button>
+                    <div className="w-px h-4 bg-slate-200 mx-1"></div>
+                    <button className="p-1.5 hover:bg-slate-100 rounded-md text-slate-500"><ArrowUpDown size={18} /></button>
+                    <button className="p-1.5 hover:bg-slate-100 rounded-md text-slate-800"><LayoutGrid size={18} /></button>
+                    <button className="p-1.5 hover:bg-slate-100 rounded-md text-slate-400"><List size={18} /></button>
+                 </div>
+               </div>
+
+               {/* Grid of Recents */}
+               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                 
+                 {/* Card 1 */}
+                 <div className="group cursor-pointer flex flex-col gap-3">
+                   <div className="aspect-[4/3] bg-slate-100 rounded-xl overflow-hidden border border-slate-200 relative group-hover:shadow-md transition-shadow">
+                     {/* Fake Document Preview */}
+                     <div className="absolute inset-x-8 inset-y-4 bg-white shadow-sm border border-slate-200 flex flex-col p-2">
+                        <div className="w-6 h-6 rounded-full bg-indigo-900 mb-2 shrink-0"></div>
+                        <div className="h-1.5 w-full bg-indigo-900/20 rounded-full mb-1"></div>
+                        <div className="h-1 w-3/4 bg-slate-200 rounded-full mb-2"></div>
+                        <div className="h-1 w-full bg-slate-200 rounded-full mb-1"></div>
+                        <div className="h-1 w-full bg-slate-200 rounded-full mb-1"></div>
+                     </div>
+                   </div>
+                   <div className="px-1">
+                     <h3 className="text-sm font-semibold text-slate-800 truncate">CV KOUAKOU ANTOINETTE</h3>
+                     <p className="text-[11px] text-slate-500 uppercase tracking-wide mt-0.5">Document • Modifié hier</p>
+                   </div>
+                 </div>
+
+                 {/* Card 2 */}
+                 <div className="group cursor-pointer flex flex-col gap-3">
+                   <div className="aspect-[4/3] bg-slate-100 rounded-xl overflow-hidden border border-slate-200 relative group-hover:shadow-md transition-shadow">
+                     <div className="absolute inset-x-4 top-4 bottom-8 bg-white shadow-sm border border-slate-200 flex p-2 gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-600 shrink-0"></div>
+                        <div className="flex-1 mt-1">
+                          <div className="h-2 w-full bg-blue-900/20 rounded-full mb-1.5"></div>
+                          <div className="h-1.5 w-3/4 bg-slate-200 rounded-full"></div>
+                        </div>
+                     </div>
+                   </div>
+                   <div className="px-1">
+                     <h3 className="text-sm font-semibold text-slate-800 truncate">Présentation Stratégie 2026</h3>
+                     <p className="text-[11px] text-slate-500 uppercase tracking-wide mt-0.5">Présentation • 12 mars</p>
+                   </div>
+                 </div>
+
+               </div>
+            </div>
+
+            {/* Help Button Floating bottom right */}
+            <button className="fixed bottom-6 right-8 w-12 h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 z-50">
+              <span className="font-bold text-xl">?</span>
+            </button>
+        </main>
       </div>
     );
   }
