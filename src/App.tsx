@@ -1,13 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Home, FolderOpen, LayoutTemplate, Star, Sparkles, 
-  Settings, Bell, Search, ChevronDown, Plus, Presentation,
-  MonitorPlay, FileText, MonitorUp, Grid, Globe, Mail, Image as ImageIcon,
-  MoreHorizontal, UploadCloud, SlidersHorizontal, ArrowUpDown, LayoutGrid, List,
-  LayoutDashboard, Scissors, Type, Square, Download, LogOut, ArrowRight, MousePointer2,
-  X, Heart, Camera
+  Sparkles, 
+  Search, 
+  X, 
+  Heart, 
+  Camera, 
+  Presentation, 
+  MonitorPlay, 
+  FileText, 
+  MonitorUp, 
+  Grid, 
+  Globe, 
+  Mail, 
+  SlidersHorizontal,
+  LayoutDashboard,
+  Type,
+  Square,
+  Image as ImageIcon,
+  Scissors,
+  LogOut,
+  MousePointer2,
+  Download,
+  Plus,
+  Undo2,
+  Redo2,
+  Share2,
+  Maximize2,
+  Home, 
+  FolderOpen, 
+  LayoutTemplate, 
+  Star, 
+  Settings, 
+  Bell, 
+  ChevronDown, 
+  MoreHorizontal, 
+  UploadCloud, 
+  ArrowUpDown, 
+  LayoutGrid, 
+  List,
+  ArrowRight,
+  Cloud,
+  Play,
+  Clock,
+  StickyNote,
+  Layers,
+  Wand2,
+  Undo,
+  Redo,
+  ChevronUp
 } from 'lucide-react';
+import { Stage, Layer, Rect, Circle, Text as KonvaText, Image as KonvaImage, Transformer } from 'react-konva';
 import { cn } from './utils/cn';
+
+// Types for our design elements
+interface Shape {
+  id: string;
+  type: 'rect' | 'circle' | 'text';
+  x: number;
+  y: number;
+  fill: string;
+  width?: number;
+  height?: number;
+  radius?: number;
+  text?: string;
+  fontSize?: number;
+}
 
 // Simple dashboard / Editor switch
 type ViewMode = 'dashboard' | 'editor';
@@ -16,6 +73,38 @@ export default function App() {
   const [view, setView] = useState<ViewMode>('dashboard');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createCategory, setCreateCategory] = useState('foryou');
+  const [selectedTool, setSelectedTool] = useState('templates');
+  
+  // Canvas State
+  const [shapes, setShapes] = useState<Shape[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const loadPresentationTemplate = () => {
+    setShapes([
+      { id: 't1', type: 'rect', x: 0, y: 0, fill: '#ffedd5', width: 800, height: 800 },
+      { id: 't2', type: 'rect', x: 50, y: 50, fill: '#f97316', width: 100, height: 20 },
+      { id: 't3', type: 'text', x: 50, y: 250, fill: '#1e293b', text: 'VOTRE PRÉSENTATION', fontSize: 64 },
+      { id: 't4', type: 'text', x: 50, y: 340, fill: '#475569', text: 'Conçu avec Qanva-Pro', fontSize: 24 }
+    ]);
+    setSelectedId(null);
+    setView('editor');
+    setSelectedTool('templates');
+  };
+
+  const addShape = (type: 'rect' | 'circle' | 'text') => {
+    const newShape: Shape = {
+      id: Math.random().toString(36).substr(2, 9),
+      type,
+      x: 300,
+      y: 300,
+      fill: type === 'text' ? '#1e293b' : '#6366f1',
+      ...(type === 'rect' ? { width: 150, height: 150 } : {}),
+      ...(type === 'circle' ? { radius: 75 } : {}),
+      ...(type === 'text' ? { text: 'Nouveau texte', fontSize: 32 } : {})
+    };
+    setShapes([...shapes, newShape]);
+    setSelectedId(newShape.id);
+  };
 
   if (view === 'dashboard') {
     return (
@@ -124,11 +213,11 @@ export default function App() {
                    { name: 'Dimension...', icon: SlidersHorizontal, color: 'bg-slate-100', iconColor: 'text-slate-600' },
                    { name: 'Importer', icon: UploadCloud, color: 'bg-slate-100', iconColor: 'text-slate-600' },
                  ].map((cat, i) => (
-                   <button key={i} onClick={() => setView('editor')} className="flex flex-col items-center gap-3 min-w-[80px] group">
-                     <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all", cat.color)}>
-                       <cat.icon size={26} className={cat.iconColor} strokeWidth={1.5} />
+                    <button key={i} onClick={loadPresentationTemplate} className="flex flex-col items-center gap-3 min-w-[80px] group">
+                     <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all text-white", cat.color)}>
+                       <cat.icon size={26} strokeWidth={1.5} />
                      </div>
-                     <span className="text-xs font-medium text-slate-700 text-center leading-tight whitespace-nowrap">{cat.name}</span>
+                     <span className="text-xs font-bold text-slate-700 text-center leading-tight whitespace-nowrap">{cat.name}</span>
                    </button>
                  ))}
                </div>
@@ -150,9 +239,8 @@ export default function App() {
 
                {/* Grid of Recents */}
                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                 
-                 {/* Card 1 */}
-                 <div className="group cursor-pointer flex flex-col gap-3">
+                       {/* Card 1 */}
+                 <div className="group cursor-pointer flex flex-col gap-3" onClick={loadPresentationTemplate}>
                    <div className="aspect-[4/3] bg-slate-100 rounded-xl overflow-hidden border border-slate-200 relative group-hover:shadow-md transition-shadow">
                      {/* Fake Document Preview */}
                      <div className="absolute inset-x-8 inset-y-4 bg-white shadow-sm border border-slate-200 flex flex-col p-2">
@@ -170,13 +258,13 @@ export default function App() {
                  </div>
 
                  {/* Card 2 */}
-                 <div className="group cursor-pointer flex flex-col gap-3">
+                 <div className="group cursor-pointer flex flex-col gap-3" onClick={loadPresentationTemplate}>
                    <div className="aspect-[4/3] bg-slate-100 rounded-xl overflow-hidden border border-slate-200 relative group-hover:shadow-md transition-shadow">
                      <div className="absolute inset-x-4 top-4 bottom-8 bg-white shadow-sm border border-slate-200 flex p-2 gap-2">
                         <div className="w-8 h-8 rounded-full bg-blue-600 shrink-0"></div>
                         <div className="flex-1 mt-1">
-                          <div className="h-2 w-full bg-blue-900/20 rounded-full mb-1.5"></div>
-                          <div className="h-1.5 w-3/4 bg-slate-200 rounded-full"></div>
+                           <div className="h-2 w-full bg-blue-900/20 rounded-full mb-1.5"></div>
+                           <div className="h-1.5 w-3/4 bg-slate-200 rounded-full"></div>
                         </div>
                      </div>
                    </div>
@@ -185,7 +273,6 @@ export default function App() {
                      <p className="text-[11px] text-slate-500 uppercase tracking-wide mt-0.5">Présentation • 12 mars</p>
                    </div>
                  </div>
-
                </div>
             </div>
 
@@ -290,7 +377,7 @@ export default function App() {
                            <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
                               
                               {/* Item 1 */}
-                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
                                 <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
                                    <div className="w-full h-full bg-white rounded-lg shadow-sm border border-slate-200 flex flex-col relative overflow-hidden">
                                       {/* Dummy UI */}
@@ -311,7 +398,7 @@ export default function App() {
                               </div>
 
                               {/* Item 2 */}
-                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
                                 <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors relative">
                                    <div className="w-2/3 h-full bg-white rounded-lg shadow-md border border-slate-200 -rotate-6 absolute left-4 flex flex-col truncate">
                                       <div className="h-4 bg-teal-600 w-full flex items-center px-1"><Sparkles size={8} className="text-white"/></div>
@@ -333,7 +420,7 @@ export default function App() {
                               </div>
 
                               {/* Item 3 */}
-                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
                                 <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
                                    <div className="w-16 h-24 bg-violet-600 rounded-sm shadow-md flex items-center justify-center relative shadow-violet-500/20">
                                        <div className="absolute top-0 right-0 w-0 h-0 border-t-[8px] border-r-[8px] border-t-white border-r-transparent"></div>
@@ -361,7 +448,7 @@ export default function App() {
                            <h3 className="text-lg font-bold text-slate-800 mb-6">Essayez quelque chose de différent</h3>
                            <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
                                {/* Item 4 */}
-                               <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                               <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
                                 <div className="h-32 bg-gradient-to-br from-violet-100 to-indigo-50 rounded-2xl flex items-center justify-center p-4 group-hover:brightness-95 transition-all">
                                    <div className="w-16 h-20 bg-white rounded-sm shadow-sm flex flex-col relative overflow-hidden">
                                        <div className="h-1/2 bg-violet-500 flex items-center justify-center">
@@ -393,7 +480,7 @@ export default function App() {
                            
                            <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
                               {/* Item 1: Presentation */}
-                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={() => setView('editor')}>
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
                                 <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
                                    <div className="w-[120px] h-20 bg-white shadow-sm border border-slate-200 flex items-center justify-center p-2 relative overflow-hidden rounded-md">
                                       <div className="w-full h-full rounded bg-slate-100 flex items-end px-2 pt-3 relative border border-slate-200">
@@ -408,7 +495,7 @@ export default function App() {
                                       </div>
                                    </div>
                                 </div>
-                                <div>
+                                <div className="px-1">
                                    <p className="text-sm font-bold text-slate-800 hover:text-violet-600 transition-colors">Présentation</p>
                                 </div>
                               </div>
@@ -421,7 +508,7 @@ export default function App() {
                            <div className="w-full h-px bg-slate-200 mb-6"></div>
                            <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
                                {/* Item 2 */}
-                               <div className="group cursor-pointer flex flex-col gap-3 min-w-[200px]" onClick={() => setView('editor')}>
+                               <div className="group cursor-pointer flex flex-col gap-3 min-w-[200px]" onClick={loadPresentationTemplate}>
                                 <div className="h-32 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors relative overflow-hidden">
                                    <div className="w-[100px] h-[60px] bg-rose-400 rounded-md shadow-sm border border-rose-300 absolute -rotate-6 left-1/2 -ml-[60px] top-6 flex flex-col px-3 py-2">
                                       <div className="w-4 h-4 rounded-sm bg-white/40 mb-auto"></div>
@@ -439,6 +526,61 @@ export default function App() {
                         </div>
                       </div>
                     )}
+                    {createCategory === 'social' && (
+                      <div className="animate-in fade-in duration-300">
+                        <div className="mb-10">
+                           <h3 className="text-[17px] font-bold text-slate-800 mb-3">Réseaux sociaux</h3>
+                           <div className="w-full h-px bg-slate-200 mb-6"></div>
+                           <div className="flex gap-6 overflow-x-auto scrollbar-none pb-4">
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
+                                <div className="h-40 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
+                                   <div className="w-24 h-24 bg-white shadow-sm border border-slate-200 flex items-center justify-center relative overflow-hidden rounded-md">
+                                      <div className="w-full h-full bg-gradient-to-tr from-orange-400 via-rose-500 to-purple-600 p-3 flex flex-col items-center justify-center">
+                                         <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
+                                            <Heart size={14} className="text-white" />
+                                         </div>
+                                      </div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800 hover:text-violet-600 transition-colors">Publication Instagram (Carré)</p>
+                                   <p className="text-[12px] text-slate-500">1080 × 1080 px</p>
+                                </div>
+                              </div>
+                              <div className="group cursor-pointer flex flex-col gap-4 min-w-[200px]" onClick={loadPresentationTemplate}>
+                                <div className="h-40 bg-slate-100 rounded-2xl flex items-center justify-center p-4 group-hover:bg-slate-200 transition-colors">
+                                   <div className="w-16 h-28 bg-slate-900 shadow-sm border border-slate-800 flex flex-col relative overflow-hidden rounded-md">
+                                      <div className="mt-auto h-[40%] w-full bg-gradient-to-t from-black to-transparent opacity-50"></div>
+                                      <div className="absolute right-2 bottom-6 flex flex-col gap-2">
+                                         <div className="w-3 h-3 rounded-full bg-slate-400/50"></div>
+                                         <div className="w-3 h-3 rounded-full bg-slate-400/50"></div>
+                                      </div>
+                                   </div>
+                                </div>
+                                <div>
+                                   <p className="text-sm font-bold text-slate-800 hover:text-violet-600 transition-colors">Vidéo TikTok</p>
+                                   <p className="text-[12px] text-slate-500">1080 × 1920 px</p>
+                                </div>
+                              </div>
+                           </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {createCategory === 'photo' && (
+                      <div className="animate-in fade-in duration-300">
+                        <div className="mb-10 text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                           <div className="w-16 h-16 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                              <Camera size={32} />
+                           </div>
+                           <h3 className="text-lg font-bold text-slate-800 mb-2">Modifier une photo</h3>
+                           <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">Importez une photo et modifiez-la avec des filtres, des outils de recadrage et plus.</p>
+                           <button className="bg-violet-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-violet-700 transition-colors">
+                              Importer un média
+                           </button>
+                        </div>
+                      </div>
+                    )}
                  </div>
                </div>
 
@@ -451,98 +593,327 @@ export default function App() {
 
 
   return (
-    <div className="flex h-screen w-full bg-slate-100 overflow-hidden">
+    <div className="flex h-screen w-full bg-slate-100 overflow-hidden text-slate-800">
       
       {/* SIDEBAR MAIN NAV */}
-      <aside className="w-20 bg-slate-900 border-r border-slate-800 flex flex-col items-center py-6 gap-6 z-20 shrink-0">
-        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg mb-4 cursor-pointer" onClick={() => setView('dashboard')}>
+      <aside className="w-[72px] bg-[#1e1e2d] flex flex-col items-center py-4 gap-4 z-20 shrink-0">
+        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:rotate-6 transition-transform" onClick={() => setView('dashboard')}>
           <span className="text-white font-black text-lg">Q</span>
         </div>
         
-        <div className="flex flex-col gap-4 w-full px-2">
-          {[{ id: 'templates', icon: LayoutDashboard, label: 'Modèles' },
+        <div className="flex flex-col gap-1 w-full px-1">
+          {[
+            { id: 'templates', icon: LayoutTemplate, label: 'Modèles' },
+            { id: 'elements', icon: Grid, label: 'Éléments' },
             { id: 'text', icon: Type, label: 'Texte' },
-            { id: 'elements', icon: Square, label: 'Éléments' },
-            { id: 'uploads', icon: ImageIcon, label: 'Médias' },
-            { id: 'draw', icon: Scissors, label: 'Dessiner' }
+            { id: 'brand', icon: Star, label: 'Marque' },
+            { id: 'uploads', icon: UploadCloud, label: 'Importer' },
+            { id: 'tools', icon: SlidersHorizontal, label: 'Outils' },
+            { id: 'projects', icon: FolderOpen, label: 'Projets' }
           ].map(tool => (
-            <button key={tool.id} className="w-full flex flex-col items-center gap-1.5 p-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
-              <tool.icon size={22} />
-              <span className="text-[9px] font-bold">{tool.label}</span>
+            <button 
+              key={tool.id} 
+              onClick={() => setSelectedTool(tool.id)}
+              className={cn(
+                "w-full flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200",
+                selectedTool === tool.id ? "text-white bg-white/10" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+              )}
+            >
+              <tool.icon size={22} strokeWidth={selectedTool === tool.id ? 2.5 : 2} />
+              <span className="text-[9px] font-medium opacity-80">{tool.label}</span>
             </button>
           ))}
         </div>
-        
-        <div className="mt-auto flex flex-col gap-4 w-full px-2">
-          <button className="w-full flex flex-col items-center gap-1.5 p-3 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-400/10 transition-colors" onClick={() => setView('dashboard')}>
-            <LogOut size={22} />
-            <span className="text-[9px] font-bold tracking-wider">Sortir</span>
-          </button>
-        </div>
       </aside>
 
-      {/* SECONDARY PANEL (Templates, Objects, etc) */}
-      <div className="w-80 bg-white border-r border-slate-200 shadow-xl z-10 flex flex-col pointer-events-auto shrink-0 animate-in slide-in-from-left-8">
-         <div className="p-6">
-            <h3 className="text-xl font-black text-slate-900">Éléments</h3>
-            <div className="mt-6 grid grid-cols-2 gap-3">
-               <div className="aspect-square bg-slate-100 rounded-2xl border-2 border-transparent hover:border-indigo-500 cursor-pointer flex items-center justify-center transition-all">
-                  <div className="w-12 h-12 bg-slate-800 rounded-xl"></div>
+      {/* SECONDARY PANEL (Dynamic based on selectedTool) */}
+      <div className="w-80 bg-white border-r border-slate-200 shadow-2xl z-10 flex flex-col pointer-events-auto shrink-0 animate-in slide-in-from-left-8 duration-300">
+         <div className="p-6 h-full flex flex-col overflow-y-auto">
+            
+            {selectedTool === 'elements' && (
+              <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                <h3 className="text-lg font-black text-slate-900 mb-6">Éléments</h3>
+                <div className="grid grid-cols-2 gap-3">
+                   <div 
+                     onClick={() => addShape('rect')}
+                     className="aspect-square bg-slate-100 rounded-2xl border-2 border-transparent hover:border-indigo-500 cursor-pointer flex flex-col items-center justify-center transition-all group p-4">
+                      <div className="w-full h-full bg-slate-800 rounded-lg group-hover:scale-95 transition-transform"></div>
+                      <span className="text-[10px] font-bold mt-2 text-slate-500 uppercase tracking-wider">Carré</span>
+                   </div>
+                   <div 
+                     onClick={() => addShape('circle')}
+                     className="aspect-square bg-slate-100 rounded-2xl border-2 border-transparent hover:border-indigo-500 cursor-pointer flex flex-col items-center justify-center transition-all group p-4">
+                      <div className="w-full h-full bg-slate-800 rounded-full group-hover:scale-95 transition-transform"></div>
+                      <span className="text-[10px] font-bold mt-2 text-slate-500 uppercase tracking-wider">Cercle</span>
+                   </div>
+                </div>
+              </div>
+            )}
+
+            {selectedTool === 'text' && (
+              <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                <h3 className="text-lg font-black text-slate-900 mb-6">Texte</h3>
+                <div className="space-y-3">
+                   <button 
+                     onClick={() => addShape('text')}
+                     className="w-full bg-slate-100 hover:bg-slate-200 p-4 rounded-xl text-left transition-colors group">
+                     <p className="text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">Ajouter un titre</p>
+                   </button>
+                   <button 
+                     onClick={() => addShape('text')}
+                     className="w-full bg-slate-100 hover:bg-slate-200 p-4 rounded-xl text-left transition-colors group">
+                     <p className="text-lg font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">Ajouter un sous-titre</p>
+                   </button>
+                </div>
+              </div>
+            )}
+
+            {selectedTool === 'templates' && (
+               <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                 <h3 className="text-lg font-black text-slate-900 mb-6">Modèles</h3>
+                 <div className="space-y-4">
+                    <div 
+                      onClick={() => {
+                        setShapes([
+                          { id: 't1', type: 'rect', x: 0, y: 0, fill: '#ffedd5', width: 800, height: 800 },
+                          { id: 't2', type: 'rect', x: 50, y: 50, fill: '#f97316', width: 100, height: 20 },
+                          { id: 't3', type: 'text', x: 50, y: 600, fill: '#1e293b', text: 'DESIGN MODERNE', fontSize: 64 },
+                          { id: 't4', type: 'text', x: 50, y: 680, fill: '#475569', text: 'Présentation professionnelle 2024', fontSize: 24 }
+                        ]);
+                        setSelectedId(null);
+                      }}
+                      className="relative group cursor-pointer">
+                      <div className="aspect-[4/3] bg-orange-100 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group-hover:shadow-md transition-all">
+                         {/* Mock presentation template */}
+                         <div className="w-full h-full p-4 flex flex-col justify-between">
+                            <div className="w-12 h-2 bg-orange-500 rounded-full opacity-50"></div>
+                            <div className="space-y-2">
+                               <div className="w-full h-3 bg-slate-800 rounded-full"></div>
+                               <div className="w-2/3 h-3 bg-slate-800 rounded-full"></div>
+                            </div>
+                         </div>
+                      </div>
+                      <div className="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/5 transition-colors rounded-2xl"></div>
+                      <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">Minimaliste Orange</p>
+                    </div>
+                 </div>
                </div>
-               <div className="aspect-square bg-slate-100 rounded-2xl border-2 border-transparent hover:border-indigo-500 cursor-pointer flex items-center justify-center transition-all">
-                  <div className="w-12 h-12 bg-slate-800 rounded-full"></div>
-               </div>
-               <div className="aspect-square bg-slate-100 rounded-2xl border-2 border-transparent hover:border-indigo-500 cursor-pointer p-4 transition-all">
-                  <div className="w-full h-full bg-slate-800 rounded-lg"></div>
-               </div>
-               <div className="aspect-square bg-slate-100 rounded-2xl border-2 border-transparent hover:border-indigo-500 cursor-pointer p-4 transition-all">
-                  <div className="w-full h-full border-4 border-slate-800 rounded-full"></div>
-               </div>
-            </div>
+            )}
+            
          </div>
       </div>
 
       {/* CANVAS WORKSPACE */}
       <div className="flex-1 flex flex-col relative h-full">
         
-        {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-10">
+        {/* Top Header matching the dark blue from the image */}
+        <header className="h-12 bg-[#2d4cc9] flex items-center justify-between px-4 shrink-0 z-30 text-white shadow-md">
            <div className="flex items-center gap-4">
-              <button className="p-2 text-slate-400 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 rounded-lg transition-colors">
-                <MousePointer2 size={18} />
+              <button className="text-white/80 hover:text-white flex items-center">
+                <Home size={18} onClick={() => setView('dashboard')} className="cursor-pointer" />
               </button>
+              <div className="flex items-center gap-4 text-[13px] font-semibold">
+                <button className="hover:bg-white/10 px-2 py-1 rounded transition-colors">Fichier</button>
+                <button className="hover:bg-white/10 px-2 py-1 rounded transition-colors">Redimensionner</button>
+                <button className="hover:bg-white/10 px-2 py-1 rounded transition-colors flex items-center gap-1">
+                  Retouche <ChevronDown size={14} />
+                </button>
+              </div>
+              <div className="flex bg-white/10 rounded-md p-0.5 ml-2">
+                <button className="p-1.5 hover:bg-white/10 rounded text-white/50">
+                  <Undo size={16} />
+                </button>
+                <button className="p-1.5 hover:bg-white/10 rounded text-white/50">
+                  <Redo size={16} />
+                </button>
+              </div>
            </div>
            
-           {/* Top Properties Bar */}
-           <div className="bg-slate-50 px-4 py-2 rounded-xl flex items-center gap-6 border border-slate-200">
-               <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-indigo-500 border border-slate-300 shadow-sm cursor-pointer hover:scale-110 transition-transform"></div>
-                  <div className="w-px h-5 bg-slate-200"></div>
-                  <span className="text-xs font-bold text-slate-500">OPACITÉ</span>
-                  <input type="range" className="w-24 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
-               </div>
+           {/* Center Piece: Title + Save Status */}
+           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+              <Cloud size={16} className="text-white/60" />
+              <span className="text-sm font-medium text-white/90">Sans titre - Présentat...</span>
+              <div className="w-6 h-6 rounded-full bg-orange-400 flex items-center justify-center text-[10px] font-bold">PR</div>
            </div>
 
-           <button className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-colors">
-             <Download size={16} />
-             Exporter
-           </button>
+           <div className="flex items-center gap-2">
+             <button className="flex items-center gap-2 hover:bg-white/10 text-white px-3 py-1.5 rounded-md text-sm font-semibold transition-all">
+               <Maximize2 size={16} />
+             </button>
+             <button className="flex items-center gap-2 hover:bg-white/10 text-white px-4 py-1.5 rounded-md text-sm font-bold transition-all border border-white/20">
+               <Play size={16} className="fill-white" />
+               Présenter
+             </button>
+             <button className="flex items-center gap-2 bg-[#7d2ae8] hover:bg-[#6c24c9] text-white px-4 py-1.5 rounded-md text-sm font-bold transition-all shadow-lg ml-2">
+               <Share2 size={16} />
+               Partager
+             </button>
+           </div>
         </header>
 
-        {/* The Konva Canvas (Placeholder for now) */}
-        <main className="flex-1 bg-slate-100 flex items-center justify-center p-8 overflow-auto relative">
+        {/* WORKSPACE AREA - Light grey background matching image */}
+        <main className="flex-1 bg-[#f0f2f5] flex flex-col items-center justify-between p-4 overflow-hidden relative">
            
-           {/* Zoomed out canvas view */}
-           <div className="w-[800px] h-[800px] bg-white shadow-2xl overflow-hidden relative border border-slate-200">
-               <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-100 rounded-3xl border-2 border-indigo-400 rotate-12 flex items-center justify-center">
-                   <p className="text-indigo-600 font-bold text-xl">Shape</p>
-               </div>
-               <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-rose-100 rounded-full border-2 border-rose-400 -translate-x-1/2 flex items-center justify-center shadow-lg">
-                   <p className="text-rose-600 font-bold text-xl text-center leading-tight">QANVA<br/>PRO</p>
-               </div>
+           {/* Contextual MAGIC Floating toolbar - ALWAYS VISIBLE now */}
+           <div className="mt-2 animate-in fade-in slide-in-from-top-4 bg-white px-3 py-1.5 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-slate-100 flex items-center gap-3 z-20 transition-all">
+              <button className="flex items-center gap-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:brightness-105 transition-all">
+                 <Sparkles size={14} className="fill-white" />
+                 Demander à Canva
+              </button>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <button className="text-[11px] font-bold text-slate-700 hover:bg-slate-50 px-2 py-1 rounded transition-colors">Modifier</button>
+              
+              {selectedId && (
+                <>
+                  <div 
+                    onClick={() => {
+                      const colors = ['#6366f1', '#f43f5e', '#10b981', '#f59e0b', '#1e293b', '#ffffff'];
+                      const currentElement = shapes.find(s => s.id === selectedId);
+                      const current = currentElement?.fill;
+                      const next = colors[(colors.indexOf(current || '') + 1) % colors.length];
+                      setShapes(shapes.map(s => s.id === selectedId ? { ...s, fill: next } : s));
+                    }}
+                    className="w-6 h-6 rounded-full border border-slate-300 cursor-pointer overflow-hidden shadow-inner relative group/color"
+                    style={{ background: 'conic-gradient(red, yellow, lime, aqua, blue, magenta, red)' }}
+                  >
+                    <div className="absolute inset-0.5 rounded-full" style={{ backgroundColor: shapes.find(s => s.id === selectedId)?.fill }} />
+                    <div className="absolute inset-0 bg-black/0 group-hover/color:bg-black/5 transition-colors" />
+                  </div>
+                  <button className="text-[11px] font-bold text-slate-700 hover:bg-slate-50 px-2 py-1 rounded flex items-center gap-1 transition-colors">
+                    Position <ChevronDown size={12} />
+                  </button>
+                  <div className="w-px h-4 bg-slate-200"></div>
+                  <button 
+                    onClick={() => {
+                      setShapes(shapes.filter(s => s.id !== selectedId));
+                      setSelectedId(null);
+                    }}
+                    className="p-1.5 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded transition-colors"
+                  >
+                    <Scissors size={14} />
+                  </button>
+                </>
+              )}
+
+              {!selectedId && (
+                <div className="flex items-center gap-3">
+                   <button className="text-[11px] font-bold text-slate-400 cursor-not-allowed px-2 py-1 flex items-center gap-1 opacity-50">
+                     Sélect. élément
+                   </button>
+                   <div className="w-px h-4 bg-slate-200"></div>
+                   <div className="flex items-center gap-1">
+                      <button className="p-1 hover:bg-slate-100 rounded text-slate-600"><Layers size={14} /></button>
+                      <button className="p-1 hover:bg-slate-100 rounded text-slate-600"><Wand2 size={14} /></button>
+                   </div>
+                </div>
+              )}
+           </div>
+
+           {/* The Canvas - Centered with a thin blue outline when "page" is active */}
+           <div className="flex-1 flex items-center justify-center w-full py-4 relative group">
+              <div 
+                className="bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] relative border-2 border-transparent hover:border-blue-400 transition-colors" 
+                style={{ width: '80%', aspectRatio: '16/9', maxHeight: '70vh' }}
+              >
+                <Stage 
+                  width={800} 
+                  height={450} // 16:9 ratio
+                  ref={(node: any) => { (window as any).stageRef = node; }}
+                  onMouseDown={(e: any) => {
+                    const clickedOnEmpty = e.target === e.target.getStage();
+                    if (clickedOnEmpty) {
+                      setSelectedId(null);
+                    }
+                  }}
+                >
+                  <Layer>
+                    {shapes.map((shape: Shape) => {
+                      const isSelected = selectedId === shape.id;
+                      const commonProps = {
+                        key: shape.id,
+                        ...shape,
+                        name: shape.id,
+                        draggable: true,
+                        onClick: () => setSelectedId(shape.id),
+                        onTap: () => setSelectedId(shape.id),
+                        onDragEnd: (e: any) => {
+                          const newShapes = shapes.slice();
+                          const sh = newShapes.find((s: Shape) => s.id === shape.id);
+                          if (sh) {
+                            sh.x = e.target.x();
+                            sh.y = e.target.y();
+                          }
+                          setShapes(newShapes);
+                        },
+                        stroke: isSelected ? '#2d4cc9' : undefined,
+                        strokeWidth: isSelected ? 2 : 0,
+                      };
+
+                      if (shape.type === 'rect') return <Rect {...commonProps} />;
+                      if (shape.type === 'circle') return <Circle {...commonProps} />;
+                      if (shape.type === 'text') return <KonvaText {...commonProps} />;
+                      return null;
+                    })}
+                    {selectedId && (
+                      <Transformer
+                        anchorSize={8}
+                        anchorCornerRadius={4}
+                        borderStroke="#2d4cc9"
+                        nodes={[shapes.find(s => s.id === selectedId) ? (window as any).stageRef?.findOne('#' + selectedId) : null].filter(n => n)}
+                      />
+                    )}
+                  </Layer>
+                </Stage>
+              </div>
+           </div>
+
+           {/* Page Preview rail matching image */}
+           <div className="w-full flex items-center justify-center gap-3 py-4 z-10 shrink-0">
+              <div className="flex flex-col items-center gap-1 group cursor-pointer">
+                 <div className="w-24 h-14 bg-white border-2 border-slate-400 rounded-md shadow-sm flex items-center justify-center text-xs font-bold text-slate-300">
+                    <LayoutGrid size={14} />
+                 </div>
+                 <span className="text-[10px] font-bold text-slate-500">1</span>
+              </div>
+              <div className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer">
+                 <Plus size={20} />
+              </div>
+              <div className="w-8 h-8 flex items-center justify-center text-slate-300">
+                 <ChevronDown size={18} />
+              </div>
            </div>
 
         </main>
+
+        {/* Bottom Status Bar matching image */}
+        <footer className="h-10 bg-white border-t border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
+           <div className="flex items-center gap-6">
+              <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-[11px] font-bold uppercase tracking-wider transition-colors">
+                <StickyNote size={14} />
+                Notes
+              </button>
+              <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-[11px] font-bold uppercase tracking-wider transition-colors">
+                <Clock size={14} />
+                Minuteur
+              </button>
+           </div>
+
+           <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <input type="range" className="w-32 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-400" />
+                <span className="text-[11px] font-bold text-slate-500">34 %</span>
+              </div>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-colors">
+                <LayoutGrid size={14} />
+                Pages
+              </button>
+              <span className="text-[11px] font-bold text-slate-400">1/1</span>
+              <button className="p-1 text-slate-400 hover:text-slate-800 transition-colors">
+                <Maximize2 size={14} />
+              </button>
+           </div>
+        </footer>
 
       </div>
     </div>
