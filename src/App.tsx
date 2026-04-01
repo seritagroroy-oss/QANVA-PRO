@@ -596,14 +596,14 @@ export default function App() {
     <div className="flex h-screen w-full bg-slate-100 overflow-hidden text-slate-800">
       
       {/* SIDEBAR MAIN NAV */}
-      <aside className="w-[72px] bg-[#1e1e2d] flex flex-col items-center py-4 gap-4 z-20 shrink-0">
-        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:rotate-6 transition-transform" onClick={() => setView('dashboard')}>
-          <span className="text-white font-black text-lg">Q</span>
+      <aside className="w-[72px] bg-[#1e1e2d] flex flex-col items-center py-4 gap-4 z-20 shrink-0 border-r border-white/5">
+        <div className="w-10 h-10 bg-gradient-to-br from-[#7d2ae8] to-[#ff2ae8] rounded-xl flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform active:scale-95" onClick={() => setView('dashboard')}>
+          <span className="text-white font-black text-xl tracking-tighter">Q</span>
         </div>
         
         <div className="flex flex-col gap-1 w-full px-1">
           {[
-            { id: 'templates', icon: LayoutTemplate, label: 'Modèles' },
+            { id: 'templates', icon: LayoutTemplate, label: 'Modèles', color: 'text-white' },
             { id: 'elements', icon: Grid, label: 'Éléments' },
             { id: 'text', icon: Type, label: 'Texte' },
             { id: 'brand', icon: Star, label: 'Marque' },
@@ -615,12 +615,12 @@ export default function App() {
               key={tool.id} 
               onClick={() => setSelectedTool(tool.id)}
               className={cn(
-                "w-full flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200",
+                "w-full flex flex-col items-center gap-1.5 p-2 px-1 rounded-lg transition-all duration-200",
                 selectedTool === tool.id ? "text-white bg-white/10" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               )}
             >
               <tool.icon size={22} strokeWidth={selectedTool === tool.id ? 2.5 : 2} />
-              <span className="text-[9px] font-medium opacity-80">{tool.label}</span>
+              <span className="text-[10px] font-medium opacity-80 scale-90">{tool.label}</span>
             </button>
           ))}
         </div>
@@ -695,7 +695,6 @@ export default function App() {
                       </div>
                       <div className="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/5 transition-colors rounded-2xl"></div>
                       <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">Minimaliste Orange</p>
-                    </div>
                  </div>
                </div>
             )}
@@ -703,127 +702,156 @@ export default function App() {
          </div>
       </div>
 
-      {/* CANVAS WORKSPACE */}
       <div className="flex-1 flex flex-col relative h-full">
         
-        {/* Top Header matching the dark blue from the image */}
-        <header className="h-12 bg-[#2d4cc9] flex items-center justify-between px-4 shrink-0 z-30 text-white shadow-md">
-           <div className="flex items-center gap-4">
-              <button className="text-white/80 hover:text-white flex items-center">
-                <Home size={18} onClick={() => setView('dashboard')} className="cursor-pointer" />
+        {/* Top Header */}
+        <header className="h-14 bg-[#233bbd] flex items-center justify-between px-4 shrink-0 z-30 text-white shadow-lg">
+           <div className="flex items-center gap-2">
+              <button onClick={() => setView('dashboard')} className="hover:bg-white/10 p-2 rounded-lg transition-colors mr-1">
+                <Home size={20} className="text-white" />
               </button>
-              <div className="flex items-center gap-4 text-[13px] font-semibold">
-                <button className="hover:bg-white/10 px-2 py-1 rounded transition-colors">Fichier</button>
-                <button className="hover:bg-white/10 px-2 py-1 rounded transition-colors">Redimensionner</button>
-                <button className="hover:bg-white/10 px-2 py-1 rounded transition-colors flex items-center gap-1">
-                  Retouche <ChevronDown size={14} />
-                </button>
+              <div className="flex items-center gap-1 text-[13px] font-bold">
+                <button className="hover:bg-white/10 px-3 py-2 rounded transition-colors">Fichier</button>
+                <button className="hover:bg-white/10 px-3 py-2 rounded transition-colors hidden md:block text-white/80">Redimensionner et Retouche Magique</button>
               </div>
-              <div className="flex bg-white/10 rounded-md p-0.5 ml-2">
-                <button className="p-1.5 hover:bg-white/10 rounded text-white/50">
+              <div className="flex bg-white/10 rounded-lg p-0.5 ml-4 border border-white/5">
+                <button className="p-2 hover:bg-white/20 rounded-md text-white/50 hover:text-white transition-colors">
                   <Undo size={16} />
                 </button>
-                <button className="p-1.5 hover:bg-white/10 rounded text-white/50">
+                <button className="p-2 hover:bg-white/20 rounded-md text-white/50 hover:text-white transition-colors">
                   <Redo size={16} />
                 </button>
               </div>
+              <div className="w-px h-6 bg-white/10 mx-3"></div>
+              <div className="flex items-center gap-2 text-white/60 hover:text-white transition-all cursor-pointer">
+                  <Cloud size={16} />
+                  <span className="text-[11px] font-bold uppercase tracking-widest opacity-80">Enregistré</span>
+              </div>
            </div>
            
-           {/* Center Piece: Title + Save Status */}
+           {/* Center Piece */}
            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-              <Cloud size={16} className="text-white/60" />
-              <span className="text-sm font-medium text-white/90">Sans titre - Présentat...</span>
-              <div className="w-6 h-6 rounded-full bg-orange-400 flex items-center justify-center text-[10px] font-bold">PR</div>
+              <span className="text-[13px] font-bold text-white tracking-wide truncate max-w-[250px]">Sans titre - Présentation (16:9)</span>
+              <div className="w-6 h-6 rounded-full bg-orange-400 flex items-center justify-center text-[10px] font-black border border-white/20">PR</div>
            </div>
 
-           <div className="flex items-center gap-2">
-             <button className="flex items-center gap-2 hover:bg-white/10 text-white px-3 py-1.5 rounded-md text-sm font-semibold transition-all">
-               <Maximize2 size={16} />
-             </button>
-             <button className="flex items-center gap-2 hover:bg-white/10 text-white px-4 py-1.5 rounded-md text-sm font-bold transition-all border border-white/20">
+           <div className="flex items-center gap-3">
+             <div className="flex -space-x-1.5 mr-3 overflow-hidden">
+                <div className="w-8 h-8 rounded-full border-2 border-[#233bbd] bg-sky-200 flex items-center justify-center text-[10px] font-bold text-sky-800">JS</div>
+                <div className="w-8 h-8 rounded-full border-2 border-[#233bbd] bg-violet-400 flex items-center justify-center text-[10px] font-bold text-white">Me</div>
+             </div>
+             
+             <button className="flex items-center gap-2 hover:bg-white/10 text-white px-4 py-2 rounded-lg text-sm font-bold border border-white/20">
                <Play size={16} className="fill-white" />
                Présenter
              </button>
-             <button className="flex items-center gap-2 bg-[#7d2ae8] hover:bg-[#6c24c9] text-white px-4 py-1.5 rounded-md text-sm font-bold transition-all shadow-lg ml-2">
-               <Share2 size={16} />
+             <button className="flex items-center gap-2 bg-[#7d2ae8] hover:bg-[#6c24c9] text-white px-6 py-2.5 rounded-full text-sm font-black shadow-[0_4px_15px_rgba(125,42,232,0.4)] transition-all active:scale-95">
+               <Share2 size={16} strokeWidth={2.5} />
                Partager
              </button>
            </div>
         </header>
 
-        {/* WORKSPACE AREA - Light grey background matching image */}
-        <main className="flex-1 bg-[#f0f2f5] flex flex-col items-center justify-between p-4 overflow-hidden relative">
+        {/* WORKSPACE AREA */}
+        <main className="flex-1 flex flex-col items-center justify-start p-4 overflow-hidden relative">
            
-           {/* Contextual MAGIC Floating toolbar - ALWAYS VISIBLE now */}
-           <div className="mt-2 animate-in fade-in slide-in-from-top-4 bg-white px-3 py-1.5 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-slate-100 flex items-center gap-3 z-20 transition-all">
-              <button className="flex items-center gap-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:brightness-105 transition-all">
-                 <Sparkles size={14} className="fill-white" />
-                 Demander à Canva
+           {/* MAGIC FLOATING TOOLBAR */}
+           <div className="my-2 bg-white px-2 py-1.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.15)] border border-slate-100 flex items-center gap-2 z-20 scale-105">
+              <button className="flex items-center gap-2 bg-gradient-to-r from-[#20d5e3] to-[#20e3b2] text-white px-4 py-2.5 rounded-xl text-[12px] font-black shadow-sm group">
+                 <Sparkles size={16} className="fill-white animate-pulse" />
+                 Studio Magique
               </button>
-              <div className="w-px h-4 bg-slate-200"></div>
-              <button className="text-[11px] font-bold text-slate-700 hover:bg-slate-50 px-2 py-1 rounded transition-colors">Modifier</button>
               
-              {selectedId && (
+              <div className="w-px h-8 bg-slate-100 mx-1"></div>
+              
+              {!selectedId ? (
                 <>
+                  <button className="text-[12px] font-bold text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-colors border border-slate-100 flex items-center gap-2">
+                    <ImageIcon size={16} className="text-slate-400" />
+                    Modifier la page
+                  </button>
+                  <div className="w-9 h-9 rounded-xl bg-slate-800 border-2 border-white shadow-sm flex items-center justify-center cursor-pointer">
+                    <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <button className="text-[12px] font-black text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100 flex items-center gap-2">
+                    <Wand2 size={16} className="text-violet-600" />
+                    Modifier l'élément
+                  </button>
+                  
                   <div 
                     onClick={() => {
                       const colors = ['#6366f1', '#f43f5e', '#10b981', '#f59e0b', '#1e293b', '#ffffff'];
                       const currentElement = shapes.find(s => s.id === selectedId);
-                      const current = currentElement?.fill;
-                      const next = colors[(colors.indexOf(current || '') + 1) % colors.length];
+                      const next = colors[(colors.indexOf(currentElement?.fill || '') + 1) % colors.length];
                       setShapes(shapes.map(s => s.id === selectedId ? { ...s, fill: next } : s));
                     }}
-                    className="w-6 h-6 rounded-full border border-slate-300 cursor-pointer overflow-hidden shadow-inner relative group/color"
-                    style={{ background: 'conic-gradient(red, yellow, lime, aqua, blue, magenta, red)' }}
+                    className="w-10 h-10 rounded-xl border-2 border-white cursor-pointer shadow-md overflow-hidden"
+                    style={{ background: 'conic-gradient(#ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)' }}
                   >
-                    <div className="absolute inset-0.5 rounded-full" style={{ backgroundColor: shapes.find(s => s.id === selectedId)?.fill }} />
-                    <div className="absolute inset-0 bg-black/0 group-hover/color:bg-black/5 transition-colors" />
+                    <div className="w-full h-full" style={{ backgroundColor: shapes.find(s => s.id === selectedId)?.fill }} />
                   </div>
-                  <button className="text-[11px] font-bold text-slate-700 hover:bg-slate-50 px-2 py-1 rounded flex items-center gap-1 transition-colors">
-                    Position <ChevronDown size={12} />
-                  </button>
-                  <div className="w-px h-4 bg-slate-200"></div>
-                  <button 
-                    onClick={() => {
-                      setShapes(shapes.filter(s => s.id !== selectedId));
-                      setSelectedId(null);
-                    }}
-                    className="p-1.5 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded transition-colors"
-                  >
-                    <Scissors size={14} />
-                  </button>
-                </>
-              )}
 
-              {!selectedId && (
-                <div className="flex items-center gap-3">
-                   <button className="text-[11px] font-bold text-slate-400 cursor-not-allowed px-2 py-1 flex items-center gap-1 opacity-50">
-                     Sélect. élément
-                   </button>
-                   <div className="w-px h-4 bg-slate-200"></div>
-                   <div className="flex items-center gap-1">
-                      <button className="p-1 hover:bg-slate-100 rounded text-slate-600"><Layers size={14} /></button>
-                      <button className="p-1 hover:bg-slate-100 rounded text-slate-600"><Wand2 size={14} /></button>
-                   </div>
-                </div>
+                  <div className="w-px h-8 bg-slate-100 mx-1"></div>
+
+                  <button className="text-[12px] font-bold text-slate-600 hover:bg-slate-50 px-3 py-2 rounded-xl flex items-center gap-1.5">
+                    Position
+                    <ChevronDown size={14} className="text-slate-300" />
+                  </button>
+
+                  <div className="flex bg-slate-50/50 p-1 rounded-xl gap-1">
+                    <button className="p-2 hover:bg-white hover:shadow-sm text-slate-400 hover:text-slate-700 rounded-lg">
+                      <Layers size={18} />
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const s = shapes.find(sh => sh.id === selectedId);
+                        if (s) {
+                          const newShape = { ...s, id: Math.random().toString(36).substr(2, 9), x: s.x + 20, y: s.y + 20 };
+                          setShapes([...shapes, newShape]);
+                          setSelectedId(newShape.id);
+                        }
+                      }}
+                      className="p-2 hover:bg-white hover:shadow-sm text-slate-400 hover:text-slate-700 rounded-lg"
+                    >
+                      <Plus size={18} />
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setShapes(shapes.filter(s => s.id !== selectedId));
+                        setSelectedId(null);
+                      }}
+                      className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg"
+                    >
+                      <Scissors size={18} />
+                    </button>
+                  </div>
+                </>
               )}
            </div>
 
-           {/* The Canvas - Centered with a thin blue outline when "page" is active */}
-           <div className="flex-1 flex items-center justify-center w-full py-4 relative group">
+           {/* SECONDARY ACTION BAR */}
+           {selectedId && (
+              <div className="mt-2 flex items-center gap-5 bg-white/40 backdrop-blur-md px-6 py-1.5 rounded-full border border-white/20 animate-in fade-in slide-in-from-top-1">
+                 <button className="text-[10px] font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest">Inverser</button>
+                 <button className="text-[10px] font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest">Animer</button>
+              </div>
+           )}
+
+           {/* THE CANVAS AREA */}
+           <div className="flex-1 flex items-center justify-center w-full py-8 overflow-hidden">
               <div 
-                className="bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] relative border-2 border-transparent hover:border-blue-400 transition-colors" 
-                style={{ width: '80%', aspectRatio: '16/9', maxHeight: '70vh' }}
+                className="bg-white shadow-[0_25px_60px_rgba(0,0,0,0.2)] relative border border-slate-200" 
+                style={{ width: '800px', height: '450px' }} // Proportional 16:9
               >
                 <Stage 
                   width={800} 
-                  height={450} // 16:9 ratio
+                  height={450} 
                   ref={(node: any) => { (window as any).stageRef = node; }}
                   onMouseDown={(e: any) => {
-                    const clickedOnEmpty = e.target === e.target.getStage();
-                    if (clickedOnEmpty) {
-                      setSelectedId(null);
-                    }
+                    if (e.target === e.target.getStage()) setSelectedId(null);
                   }}
                 >
                   <Layer>
@@ -837,15 +865,12 @@ export default function App() {
                         onClick: () => setSelectedId(shape.id),
                         onTap: () => setSelectedId(shape.id),
                         onDragEnd: (e: any) => {
-                          const newShapes = shapes.slice();
-                          const sh = newShapes.find((s: Shape) => s.id === shape.id);
-                          if (sh) {
-                            sh.x = e.target.x();
-                            sh.y = e.target.y();
-                          }
+                          const newShapes = shapes.map((sh: Shape) => 
+                            sh.id === shape.id ? { ...sh, x: e.target.x(), y: e.target.y() } : sh
+                          );
                           setShapes(newShapes);
                         },
-                        stroke: isSelected ? '#2d4cc9' : undefined,
+                        stroke: isSelected ? '#33bbff' : undefined,
                         strokeWidth: isSelected ? 2 : 0,
                       };
 
@@ -858,7 +883,7 @@ export default function App() {
                       <Transformer
                         anchorSize={8}
                         anchorCornerRadius={4}
-                        borderStroke="#2d4cc9"
+                        borderStroke="#33bbff"
                         nodes={[shapes.find(s => s.id === selectedId) ? (window as any).stageRef?.findOne('#' + selectedId) : null].filter(n => n)}
                       />
                     )}
@@ -867,55 +892,47 @@ export default function App() {
               </div>
            </div>
 
-           {/* Page Preview rail matching image */}
-           <div className="w-full flex items-center justify-center gap-3 py-4 z-10 shrink-0">
-              <div className="flex flex-col items-center gap-1 group cursor-pointer">
-                 <div className="w-24 h-14 bg-white border-2 border-slate-400 rounded-md shadow-sm flex items-center justify-center text-xs font-bold text-slate-300">
-                    <LayoutGrid size={14} />
+           {/* PAGE PREVIEW RAIL */}
+           <div className="w-full flex items-center justify-center gap-4 py-8 z-10">
+              <div className="flex flex-col items-center gap-1.5 group cursor-pointer">
+                 <div className="w-28 h-16 bg-white border-2 border-[#233bbd] rounded-xl shadow-lg flex items-center justify-center overflow-hidden relative">
+                    <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors" />
+                    <LayoutGrid size={18} className="text-[#233bbd]" />
                  </div>
-                 <span className="text-[10px] font-bold text-slate-500">1</span>
+                 <span className="text-[11px] font-black text-[#233bbd]">1</span>
               </div>
-              <div className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer">
-                 <Plus size={20} />
-              </div>
-              <div className="w-8 h-8 flex items-center justify-center text-slate-300">
-                 <ChevronDown size={18} />
-              </div>
+              <button className="w-28 h-16 bg-slate-200/50 border-2 border-dashed border-slate-300 rounded-xl hover:bg-slate-200 hover:border-slate-400 transition-all flex items-center justify-center text-slate-400 group">
+                 <Plus size={24} className="group-hover:scale-110 transition-transform" />
+              </button>
            </div>
-
         </main>
 
-        {/* Bottom Status Bar matching image */}
+        {/* BOTTOM STATUS BAR */}
         <footer className="h-10 bg-white border-t border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
-           <div className="flex items-center gap-6">
-              <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-[11px] font-bold uppercase tracking-wider transition-colors">
-                <StickyNote size={14} />
-                Notes
-              </button>
-              <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-[11px] font-bold uppercase tracking-wider transition-colors">
-                <Clock size={14} />
-                Minuteur
-              </button>
-           </div>
+            <div className="flex items-center gap-6">
+               <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-[10px] font-black uppercase tracking-widest transition-colors">
+                 <StickyNote size={14} /> Notes
+               </button>
+               <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-[10px] font-black uppercase tracking-widest transition-colors">
+                 <Clock size={14} /> Minuteur
+               </button>
+            </div>
 
-           <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <input type="range" className="w-32 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-400" />
-                <span className="text-[11px] font-bold text-slate-500">34 %</span>
-              </div>
-              <div className="w-px h-4 bg-slate-200"></div>
-              <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-colors">
-                <LayoutGrid size={14} />
-                Pages
-              </button>
-              <span className="text-[11px] font-bold text-slate-400">1/1</span>
-              <button className="p-1 text-slate-400 hover:text-slate-800 transition-colors">
-                <Maximize2 size={14} />
-              </button>
-           </div>
+            <div className="flex items-center gap-6">
+               <div className="flex items-center gap-3">
+                 <input type="range" className="w-32 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#233bbd]" />
+                 <span className="text-[11px] font-bold text-slate-500 tracking-tight">42 %</span>
+               </div>
+               <div className="w-px h-4 bg-slate-200 mx-2"></div>
+               <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-[10px] font-black uppercase tracking-widest transition-colors">
+                 <LayoutGrid size={14} /> Pages
+               </button>
+               <span className="text-[11px] font-black text-slate-400">1 / 1</span>
+               <button className="p-1.5 text-slate-400 hover:text-slate-800 transition-colors rounded-lg hover:bg-slate-100">
+                 <Maximize2 size={16} />
+               </button>
+            </div>
         </footer>
 
       </div>
-    </div>
-  );
-}
+  }
